@@ -1,0 +1,46 @@
+@import '../../variables.scss';
+
+.header {
+  height: 80px;
+  background-color: $background-color-base;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  &-home-button {
+    cursor: pointer;
+    background: none;
+    text-decoration: none;
+  }
+  &-auth-menu {
+    display: flex;
+    gap: 5px;
+    &-signin {
+      color: $heading-color;
+    }
+    &-signup {
+      color: $success-color;
+      border: 1px solid $success-color;
+    }
+    &-logout {
+      color: $text-color;
+      border: 1px solid $text-color;
+    }
+  }
+}
+
+.header-button-big {
+  text-align: center;
+  width: 90px;
+  font-size: 18px;
+  padding: 5px;
+  margin: 5px;
+  height: 40px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: opacity 0.3s;
+  &:hover {
+    opacity: 0.5;
+  }
+}
