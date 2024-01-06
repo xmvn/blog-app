@@ -1,0 +1,101 @@
+@import '../../variables.scss';
+.auth {
+  padding: 40px;
+
+  &-container {
+    padding: 15px;
+    background-color: $background-color-base;
+    width: 500px;
+    margin: 0 auto;
+    border-radius: 6px;
+    box-shadow: 4px 0px 25px 0px $disabled-color;
+  }
+
+  &-title {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+    color: $heading-color;
+  }
+  &-submitButton {
+    background-color: $info-color;
+    cursor: pointer;
+    margin-top: 40px;
+    color: $background-color-base;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  &-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-label {
+      width: 84%;
+      text-align: left;
+      font-size: 19px;
+      font-family: 'Roboto', sans-serif;
+      margin-top: 10px;
+    }
+    &-inputWrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    &-input {
+      width: 420px;
+      height: 50px;
+      margin: 10px 0 18px 0;
+      border: 1px solid $text-color-secondary;
+      border-radius: 4px;
+      padding-left: 12px;
+      font-size: 19px;
+    }
+    &-input.error {
+      border-color: $error-color;
+    }
+  }
+}
+
+.inputErrorTextLabel {
+  color: $error-color;
+  position: absolute;
+  bottom: -20px;
+}
+.alreadyHaveAccount {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 20px;
+  text-align: center;
+  color: $text-color-secondary;
+  margin-top: 3px;
+
+  &__link {
+    text-decoration: none;
+    color: $info-color;
+    margin-left: 5px;
+  }
+}
+
+.brakeLine {
+  width: 420px;
+  height: 1px;
+  background-color: $text-color;
+  margin: 20px 0 40px 0;
+}
+.agreeStatement {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.unactive {
+  background-color: grey;
+  cursor: default;
+  &:hover {
+    opacity: 1;
+  }
+}

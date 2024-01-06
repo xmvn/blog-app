@@ -43,3 +43,35 @@ export interface IFullArticle {
 export interface IArticleResponse {
   article: IArticle
 }
+
+export interface ILogin {
+  email: string
+  password: string
+}
+export interface ISubmitLogin {
+  user: ILogin
+}
+
+export interface IReg {
+  username: string
+  email: string
+  password: string
+  repeatPassword?: string
+}
+export interface ISubmitReg {
+  user: IReg
+}
+
+export interface IAuthState {
+  token: string
+  email: string
+  username: string
+  image: string | undefined
+  authError: string | null
+}
+export interface IUserInfo {
+  username: string
+  email: string
+  password: string
+  image: string | undefined
+}

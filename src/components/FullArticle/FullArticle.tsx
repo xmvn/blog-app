@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
@@ -9,6 +9,7 @@ import { AppDispatch } from '../../store'
 import { IArticlesState } from '../../types/Types'
 import { getFullArticle } from '../../services/apiService'
 import avatar from '../../assets/default_avatar.png'
+import { slicedStr } from '../../common/functions'
 
 import { Loading } from './../Loading/Loading'
 import { Error } from './../Error/Error'
@@ -18,13 +19,13 @@ import './FullArticle.scss'
 interface FullArticleProps {}
 
 const FullArticle: React.FC<FullArticleProps> = () => {
+  const [like, setLike] = useState(false)
+
   const { slug } = useParams<{ slug: string }>()
   const { fullArticle, isLoading, error } = useSelector(
     ({ articlesReducer }: { articlesReducer: IArticlesState }) => articlesReducer
   )
   const dispatch: AppDispatch = useDispatch()
-
-  const slicedStr = (str: string | undefined, length: number) => str?.slice(0, length)
 
   useEffect(() => {
     console.log('slug:', slug)
@@ -44,7 +45,13 @@ const FullArticle: React.FC<FullArticleProps> = () => {
             <div className='article-left-side'>
               <div className='article-left-side-header'>
                 <div className='article-left-side-header-text'>{fullArticle.title || 'Example'}</div>
-                <span>♥ {fullArticle.favoritesCount}</span>
+                <div className='fav-container'>
+                  <span
+                    className={`heart ${like ? 'heart-liked' : 'heart-unliked'}`}
+                    onClick={() => setLike(!like)}
+                  ></span>
+                  {fullArticle.favoritesCount}
+                </div>
               </div>
               <div className='article-left-side-taglist'>
                 {fullArticle.tagList &&

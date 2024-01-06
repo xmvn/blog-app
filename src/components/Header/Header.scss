@@ -14,7 +14,8 @@
   }
   &-auth-menu {
     display: flex;
-    gap: 5px;
+    align-items: center;
+    gap: 20px;
     &-signin {
       color: $heading-color;
     }
@@ -25,6 +26,19 @@
     &-logout {
       color: $text-color;
       border: 1px solid $text-color;
+    }
+    &-user {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      &:hover {
+        opacity: 0.5;
+      }
+      &-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+      }
     }
   }
 }
@@ -37,6 +51,20 @@
   margin: 5px;
   height: 40px;
   font-weight: 600;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: opacity 0.3s;
+  &:hover {
+    opacity: 0.5;
+  }
+}
+.header-button-small {
+  text-align: center;
+  width: 100px;
+  font-size: 14px;
+  margin: 5px;
+  padding: 5px;
+  height: 30px;
   cursor: pointer;
   border-radius: 5px;
   transition: opacity 0.3s;

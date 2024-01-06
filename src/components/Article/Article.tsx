@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react'
+import React, { useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { Link } from 'react-router-dom'
 
 import avatar from '../../assets/default_avatar.png'
+import { slicedStr } from '../../common/functions'
 
 import { IArticle } from './../../types/Types'
 
@@ -15,28 +15,32 @@ interface ArticleProps {
 }
 
 const Article: React.FC<ArticleProps> = ({ article }) => {
-  const slicedStr = (str: string, length: number) => str?.slice(0, length)
+  const [like, setLike] = useState(false)
 
   return (
     <div className='article'>
       <div className='article-left-side'>
         <div className='article-left-side-header'>
           <Link to={`/articles/${article.slug}`}>
-            <div className='article-left-side-header-text'>{article.title || 'Example'}</div>
+            <div className='article-left-side-header-text'>{slicedStr(article.title, 50) || 'Example'}</div>
           </Link>
-          <span>♥ {article.favoritesCount}</span>
+          <div className='fav-container'>
+            <span className={`heart ${like ? 'heart-liked' : 'heart-unliked'}`} onClick={() => setLike(!like)}></span>
+            {article.favoritesCount}
+          </div>
         </div>
         <div className='article-left-side-taglist'>
           {article.tagList &&
             article.tagList
-              .filter((tag) => tag.trim() !== '')
+              .filter((tag) => tag?.trim() !== '')
+              .filter((tag) => slicedStr(tag, 20) !== '')
               .map((tag, index) => (
                 <span className='article-left-side-taglist-tag' key={index}>
                   {slicedStr(tag, 20)}
                 </span>
               ))}
         </div>
-        <div className='article-left-side-content'>{slicedStr(article.body, 203)}</div>
+        <div className='article-left-side-content'>{slicedStr(article.description, 203)}</div>
       </div>
       <div className='article-right-side'>
         <div className='article-right-side-user'>
