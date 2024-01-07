@@ -25,7 +25,7 @@ export interface IArticlesState {
 
 export interface IFullArticle {
   body: string
-  slug: string
+  slug?: string
   title: string
   description: string
   createdAt: string
@@ -74,4 +74,17 @@ export interface IUserInfo {
   email: string
   password: string
   image: string | undefined
+}
+export interface Tag {
+  tag: string
+}
+
+export interface ICustomArticle {
+  title: string
+  description: string
+  body: string
+  tagList: Tag[]
+}
+export interface ISubmitArticle {
+  article: ICustomArticle
 }

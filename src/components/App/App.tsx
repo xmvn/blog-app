@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect } from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { ReactNode, useEffect } from 'react'
+import { BrowserRouter as Router, Navigate, Route, RouteProps, Routes } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import { AppDispatch } from '../../store'
@@ -10,6 +10,7 @@ import ArticleList from '../ArticleList/ArticleList'
 import FullArticle from '../FullArticle/FullArticle'
 import LoginPage from '../Auth/LoginPage/LoginPage'
 import RegisterPage from '../Auth/RegisterPage/RegisterPage'
+import CustomArticle from '../CustomArticle/CustomArticle'
 
 import ProfilePage from './../Auth/ProfilePage/ProfilePage'
 
@@ -27,6 +28,10 @@ const App = () => {
       }
     }
   }, [token])
+
+  function PrivateRoute({ children }: RouteProps): JSX.Element {
+    return <>{token ? children : <Navigate to='/sign-in' />}</>
+  }
   return (
     <Router>
       <Header />
@@ -36,7 +41,30 @@ const App = () => {
         <Route path='/articles/:slug' element={<FullArticle />} />
         <Route path='/sign-in' element={<LoginPage />} />
         <Route path='/sign-up' element={<RegisterPage />} />
-        <Route path='/profile' element={<ProfilePage />} />
+        <Route
+          path='/profile'
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/new-article'
+          element={
+            <PrivateRoute>
+              <CustomArticle />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/articles/:slug/edit'
+          element={
+            <PrivateRoute>
+              <CustomArticle />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   )

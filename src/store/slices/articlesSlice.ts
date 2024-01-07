@@ -29,6 +29,7 @@ const articlesSlice = createSlice({
         articles: [...articles],
         totalPages: action.payload.articlesCount * 2,
         isLoading: false,
+        error: null,
       }
     },
     setError(state, action: PayloadAction<string | null>) {
@@ -42,7 +43,7 @@ const articlesSlice = createSlice({
       return { ...state, currentPage: action.payload }
     },
     setFullArticle(state, action: PayloadAction<IFullArticle | null>) {
-      return { ...state, fullArticle: action.payload, isLoading: false }
+      return { ...state, fullArticle: action.payload, isLoading: false, error: null }
     },
   },
 })

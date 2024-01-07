@@ -60,7 +60,7 @@ export default function ArticleList() {
             current={state.currentPage}
             total={state.totalPages}
             size='default'
-            style={{ textAlign: 'center', marginTop: 30, paddingBottom: 60 }}
+            style={{ textAlign: 'center', marginTop: 20, paddingBottom: 10 }}
             showSizeChanger={false}
             onChange={handlePageChange}
             hideOnSinglePage

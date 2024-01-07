@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -36,9 +36,15 @@ const RegisterPage = () => {
     }
 
     await dispatch(createNewUser(newUser))
-
-    localStorage.getItem('token') ? navigate('/') : null
   }
+
+  useEffect(() => {
+    if (!state.token) {
+      navigate('/sign-up')
+    } else {
+      navigate('/')
+    }
+  }, [state.token])
 
   const regEmail = register('email', {
     required: 'Email обязателен к заполнению.',
@@ -120,7 +126,6 @@ const RegisterPage = () => {
               <label className='auth-form-label'>Password</label>
               <input
                 type='password'
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-expect-error
                 name='password'
                 className={`auth-form-input ${errors.password && 'error'}`}

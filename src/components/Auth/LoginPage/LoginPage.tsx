@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 import './../Auth.scss'
-import { ILogin } from '../../../types/Types'
+import { IAuthState, ILogin } from '../../../types/Types'
 import { emailRegExp, passwordRegExp } from '../../../common/regex'
 import { loginUser } from '../../../services/apiService'
 import { AppDispatch } from '../../../store'
 
 const LoginPage = () => {
   const dispatch: AppDispatch = useDispatch()
+  const state = useSelector((state: { authReducer: IAuthState }) => state.authReducer) || {}
   const navigate = useNavigate()
   const {
     register,
@@ -28,10 +30,16 @@ const LoginPage = () => {
         password: data.password,
       },
     }
-    await console.log(userLogin)
     await dispatch(loginUser(userLogin))
   }
 
+  useEffect(() => {
+    if (!state.token) {
+      navigate('/sign-in')
+    } else {
+      navigate('/')
+    }
+  }, [state.token])
   const regEmail = register('email', {
     required: 'Email обязателен к заполнению.',
     pattern: {

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { Dispatch } from 'redux'
 
 import { setArticles, startLoading, setError, setFullArticle } from '../store/slices/articlesSlice'
 import { setAuthError, setUser } from '../store/slices/authSlice'
-import { IFullArticle, ILogin, ISubmitLogin, ISubmitReg } from '../types/Types'
+import { IFullArticle, ISubmitArticle, ISubmitLogin, ISubmitReg } from '../types/Types'
 
 const API_URL = 'https://blog.kata.academy/api/'
 
@@ -46,7 +46,6 @@ export const createNewUser = (newUser: ISubmitReg) => async (dispatch: Dispatch)
     localStorage.setItem('user', JSON.stringify(response.data))
     localStorage.setItem('token', response.data.token)
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     if (error.message.includes('422')) {
       console.error('Email or username is already taken', error)
@@ -68,12 +67,11 @@ export const loginUser = (userData: ISubmitLogin) => async (dispatch: Dispatch) 
     console.log(response.data.user)
     console.log(localStorage.getItem('token'))
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     if (error.message.includes('422')) {
       console.error('Email or password is wrong', error)
       dispatch(setAuthError('Email or password is wrong'))
-    } else console.error('Error creating new user:', error)
+    } else console.error('Auth error:', error)
   }
 }
 export const updateUser = (userData: ISubmitLogin, token: string) => async (dispatch: Dispatch) => {
@@ -88,7 +86,6 @@ export const updateUser = (userData: ISubmitLogin, token: string) => async (disp
         Authorization: `Bearer ${token}`,
       },
     })
-
     dispatch(setUser(response.data))
     localStorage.setItem('user', JSON.stringify(response.data))
     localStorage.setItem('token', response.data.user.token)
@@ -96,5 +93,38 @@ export const updateUser = (userData: ISubmitLogin, token: string) => async (disp
     console.log(localStorage.getItem('token'))
   } catch (error) {
     console.error('Error updating user:', error)
+  }
+}
+export const postArticle = (data: ISubmitArticle, token: string, slug?: string) => async (dispatch: Dispatch) => {
+  try {
+    const NEW_URL = `${API_URL}articles${slug ? `/${slug}` : ''}`
+    const method = slug ? 'PUT' : 'POST'
+
+    const response = await axios({
+      method: method,
+      url: NEW_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: data,
+    })
+
+    console.log(response.data.article)
+  } catch (error) {
+    dispatch(setError(String(error)))
+  }
+}
+
+export const deleteArticle = (slug: string, token: string) => async (dispatch: Dispatch) => {
+  try {
+    const response = await axios.delete(`${API_URL}articles/${slug}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    console.log(response)
+  } catch (e) {
+    console.log(e)
   }
 }

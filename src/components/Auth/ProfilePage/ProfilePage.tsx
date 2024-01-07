@@ -14,13 +14,13 @@ const ProfilePage = () => {
   const navigate = useNavigate()
   const state = useSelector((state: { authReducer: IAuthState }) => state.authReducer) || {}
 
-  useEffect(() => {
-    if (!state.token) {
-      navigate('/sign-in')
-    } else {
-      navigate('/profile')
-    }
-  }, [state.token])
+  // useEffect(() => {
+  //   if (!state.token) {
+  //     navigate('/sign-in')
+  //   } else {
+  //     navigate('/profile')
+  //   }
+  // }, [state.token])
 
   const {
     register,

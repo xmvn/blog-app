@@ -29,9 +29,9 @@ const Header = () => {
       </div>
       {state.token ? (
         <div className='header-auth-menu'>
-          <Link to='/new-article'>
+          <a href='/new-article'>
             <div className='header-auth-menu-signup header-button-small'>Create article</div>
-          </Link>
+          </a>
           <Link to='/profile'>
             <div className='header-auth-menu-user'>
               <span className='header-auth-menu-user-name'>{state.username || 'John Doe'}</span>
