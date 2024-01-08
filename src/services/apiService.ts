@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import axios from 'axios'
 import { Dispatch } from 'redux'
 
+import { AppDispatch } from '../store'
 import { setArticles, startLoading, setError, setFullArticle } from '../store/slices/articlesSlice'
 import { setAuthError, setUser } from '../store/slices/authSlice'
 import { IFullArticle, ISubmitArticle, ISubmitLogin, ISubmitReg } from '../types/Types'
@@ -10,12 +9,16 @@ import { IFullArticle, ISubmitArticle, ISubmitLogin, ISubmitReg } from '../types
 const API_URL = 'https://blog.kata.academy/api/'
 
 export const getArticles =
-  (page: number = 1) =>
+  (page: number = 1, token?: string) =>
   async (dispatch: Dispatch) => {
     try {
       dispatch(startLoading())
-      const response = await axios.get(`${API_URL}/articles?limit=5&offset=${5 * (page - 1)}`)
-      console.log(response.data)
+      const response = await axios.get(`${API_URL}/articles?limit=5&offset=${5 * (page - 1)}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
       dispatch(setArticles(response.data))
     } catch (error) {
       console.error(error)
@@ -23,11 +26,15 @@ export const getArticles =
     }
   }
 
-export const getFullArticle = (slug: string) => async (dispatch: Dispatch) => {
+export const getFullArticle = (slug: string, token?: string) => async (dispatch: Dispatch) => {
   try {
     dispatch(startLoading())
-    const response = await axios.get<{ article: IFullArticle }>(`${API_URL}/articles/${slug}`)
-    console.log(response.data.article)
+    const response = await axios.get<{ article: IFullArticle }>(`${API_URL}/articles/${slug}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
     dispatch(setFullArticle(response.data.article))
   } catch (error) {
     console.error(error)
@@ -41,10 +48,9 @@ export const createNewUser = (newUser: ISubmitReg) => async (dispatch: Dispatch)
         'Content-Type': 'application/json',
       },
     })
-    console.log(response.data)
     dispatch(setUser(response.data))
     localStorage.setItem('user', JSON.stringify(response.data))
-    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('token', JSON.stringify(response.data.user.token))
   } catch (error) {
     //@ts-ignore
     if (error.message.includes('422')) {
@@ -63,9 +69,7 @@ export const loginUser = (userData: ISubmitLogin) => async (dispatch: Dispatch) 
     })
     dispatch(setUser(response.data))
     localStorage.setItem('user', JSON.stringify(response.data))
-    localStorage.setItem('token', JSON.stringify(response.data.user.token.replace(/['"]/g, '')))
-    console.log(response.data.user)
-    console.log(localStorage.getItem('token'))
+    localStorage.setItem('token', JSON.stringify(response.data.user.token))
   } catch (error) {
     //@ts-ignore
     if (error.message.includes('422')) {
@@ -89,8 +93,6 @@ export const updateUser = (userData: ISubmitLogin, token: string) => async (disp
     dispatch(setUser(response.data))
     localStorage.setItem('user', JSON.stringify(response.data))
     localStorage.setItem('token', response.data.user.token)
-    console.log(response.data.user)
-    console.log(localStorage.getItem('token'))
   } catch (error) {
     console.error('Error updating user:', error)
   }
@@ -100,7 +102,7 @@ export const postArticle = (data: ISubmitArticle, token: string, slug?: string) 
     const NEW_URL = `${API_URL}articles${slug ? `/${slug}` : ''}`
     const method = slug ? 'PUT' : 'POST'
 
-    const response = await axios({
+    await axios({
       method: method,
       url: NEW_URL,
       headers: {
@@ -109,8 +111,6 @@ export const postArticle = (data: ISubmitArticle, token: string, slug?: string) 
       },
       data: data,
     })
-
-    console.log(response.data.article)
   } catch (error) {
     dispatch(setError(String(error)))
   }
@@ -118,13 +118,27 @@ export const postArticle = (data: ISubmitArticle, token: string, slug?: string) 
 
 export const deleteArticle = (slug: string, token: string) => async (dispatch: Dispatch) => {
   try {
-    const response = await axios.delete(`${API_URL}articles/${slug}`, {
+    await axios.delete(`${API_URL}articles/${slug}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-    console.log(response)
-  } catch (e) {
-    console.log(e)
+  } catch (error) {
+    dispatch(setError(String(error)))
   }
 }
+
+export const likeArticle =
+  (slug: string | undefined, token: string, favorited: boolean) => async (dispatch: AppDispatch) => {
+    try {
+      const method = favorited ? 'delete' : 'post'
+      await axios(`https://blog.kata.academy/api/articles/${slug}/favorite`, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    } catch (error) {
+      dispatch(setError(String(error)))
+    }
+  }

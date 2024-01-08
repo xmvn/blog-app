@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -24,7 +23,7 @@ const Header = () => {
     <div className='header'>
       <div className='header-home-button'>
         <a href={'/'}>
-          <h3>Realword blog</h3>
+          <h3>Blog App</h3>
         </a>
       </div>
       {state.token ? (

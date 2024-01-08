@@ -9,10 +9,11 @@ export interface IArticle {
   description: string
   favorited: boolean
   favoritesCount: number
-  slug: string
+  slug?: string
   tagList: string[]
   title: string
   updatedAt: string
+  page?: string | number
 }
 export interface IArticlesState {
   isLoading: boolean

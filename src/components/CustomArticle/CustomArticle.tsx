@@ -19,7 +19,6 @@ const CustomArticle = () => {
   const { token } = useSelector((state: { authReducer: IAuthState }) => state.authReducer)
   const navigate = useNavigate()
 
-  // const token: string = localStorage.getItem('token')
   const dispatch: AppDispatch = useDispatch()
 
   const {
@@ -28,18 +27,11 @@ const CustomArticle = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<ICustomArticle>({
-    // defaultValues: {
-    //   title: fullArticle?.title || '',
-    //   description: fullArticle?.description || '',
-    //   body: fullArticle?.body || '',
-    //   tagList: fullArticle?.tagList || '',
-    // },
-  })
+  } = useForm<ICustomArticle>({})
 
   useEffect(() => {
     if (slug) {
-      dispatch(getFullArticle(slug))
+      dispatch(getFullArticle(slug, token))
     }
   }, [slug, dispatch])
 

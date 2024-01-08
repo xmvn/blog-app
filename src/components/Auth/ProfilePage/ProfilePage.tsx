@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { FC, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -11,16 +9,8 @@ import { updateUser } from '../../../services/apiService'
 
 const ProfilePage = () => {
   const dispatch: AppDispatch = useDispatch()
-  const navigate = useNavigate()
   const state = useSelector((state: { authReducer: IAuthState }) => state.authReducer) || {}
-
-  // useEffect(() => {
-  //   if (!state.token) {
-  //     navigate('/sign-in')
-  //   } else {
-  //     navigate('/profile')
-  //   }
-  // }, [state.token])
+  const navigate = useNavigate()
 
   const {
     register,
@@ -39,8 +29,8 @@ const ProfilePage = () => {
         image: data.image || state.image,
       },
     }
-    console.log(updatedInfo)
     dispatch(updateUser(updatedInfo, state.token))
+    navigate('/')
   }
   const regEmail = register('email', {
     pattern: {
@@ -82,7 +72,6 @@ const ProfilePage = () => {
 
   return (
     <div className='auth'>
-      {/* <ToastContainer /> */}
       <div className='auth-container'>
         <h2 className='auth-title'>Edit profile</h2>
         <form className='auth-form' onSubmit={handleSubmit(onSubmit)}>

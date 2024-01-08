@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { stringRegExp } from './regex'
 
 export const slicedStr = (str: string, length: number) => {

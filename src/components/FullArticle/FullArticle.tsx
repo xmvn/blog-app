@@ -1,16 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { format, parseISO } from 'date-fns'
 import { Popconfirm } from 'antd'
+import { HeartFilled, HeartOutlined } from '@ant-design/icons'
 
 import { AppDispatch } from '../../store'
 import { IArticlesState, IAuthState } from '../../types/Types'
-import { getFullArticle, deleteArticle } from '../../services/apiService'
+import { getFullArticle, deleteArticle, likeArticle } from '../../services/apiService'
 import avatar from '../../assets/default_avatar.png'
 import { slicedStr } from '../../common/functions'
+import { startLoading } from '../../store/slices/articlesSlice'
 
 import { Loading } from './../Loading/Loading'
 import { Error } from './../Error/Error'
@@ -18,20 +19,36 @@ import { Error } from './../Error/Error'
 import './FullArticle.scss'
 
 const FullArticle = () => {
-  const [like, setLike] = useState(false)
   const { slug } = useParams<{ slug: string }>()
+
   const navigate = useNavigate()
   const { fullArticle, isLoading, error } = useSelector(
     ({ articlesReducer }: { articlesReducer: IArticlesState }) => articlesReducer
   )
   const { token, username } = useSelector((state: { authReducer: IAuthState }) => state.authReducer)
+  const localToken = localStorage.getItem('token')
   const dispatch: AppDispatch = useDispatch()
 
+  const [like, setLike] = useState<boolean>(false)
+  const [favoritesCount, setFavoritesCount] = useState<number | undefined>(undefined)
+
   useEffect(() => {
+    dispatch(startLoading())
     if (slug) {
-      dispatch(getFullArticle(slug))
+      if (localToken) {
+        dispatch(getFullArticle(slug, localToken))
+      } else {
+        dispatch(getFullArticle(slug))
+      }
     }
   }, [slug, dispatch])
+
+  useEffect(() => {
+    if (fullArticle) {
+      setLike(fullArticle.favorited)
+      setFavoritesCount(fullArticle.favoritesCount)
+    }
+  }, [fullArticle])
 
   const handleDeleteArticle = () => {
     if (slug && token) {
@@ -39,6 +56,22 @@ const FullArticle = () => {
       navigate('/')
     }
   }
+
+  const pressLikeButton = () => {
+    if (token && fullArticle) {
+      if (!like) {
+        setLike(true)
+        setFavoritesCount((count) => (count !== undefined ? count + 1 : 1))
+      } else if (favoritesCount !== undefined && favoritesCount >= 1) {
+        setLike(false)
+        setFavoritesCount(favoritesCount - 1)
+      }
+      dispatch(likeArticle(fullArticle.slug, token, fullArticle.favorited))
+    } else {
+      return
+    }
+  }
+
   return (
     <>
       {isLoading && <Loading />}
@@ -51,14 +84,13 @@ const FullArticle = () => {
                 <div className='full_article-left-side-header-text'>
                   {slicedStr(fullArticle.title, 40) || 'Example'}
                 </div>
-                <div className='fav-container'>
-                  <span
-                    className={`heart ${like ? 'heart-liked' : 'heart-unliked'}`}
-                    onClick={() => setLike(!like)}
-                  ></span>
-                  {fullArticle.favoritesCount}
+
+                <div className='fav-container' onClick={pressLikeButton}>
+                  <span>{like ? <HeartFilled style={{ color: 'red' }} /> : <HeartOutlined />}</span>
+                  {favoritesCount}
                 </div>
               </div>
+
               <div className='full_article-left-side-taglist'>
                 {fullArticle.tagList &&
                   fullArticle.tagList

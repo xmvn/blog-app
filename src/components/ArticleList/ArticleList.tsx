@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Pagination } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getArticles } from '../../services/apiService'
-import { IArticlesState } from '../../types/Types'
+import { IArticlesState, IAuthState } from '../../types/Types'
 import { AppDispatch } from '../../store'
 import { setCurrentPage, setError } from '../../store/slices/articlesSlice'
 import { Loading } from '../Loading/Loading'
@@ -20,6 +19,7 @@ export default function ArticleList() {
   const { page: paramPage } = useParams()
   const navigate = useNavigate()
   const state = useSelector((state: { articlesReducer: IArticlesState }) => state.articlesReducer)
+  const { token } = useSelector((state: { authReducer: IAuthState }) => state.authReducer)
 
   useEffect(() => {
     if (paramPage) {
@@ -28,16 +28,14 @@ export default function ArticleList() {
       if (!isNaN(parsedPage)) {
         if (parsedPage && parsedPage > 0) {
           dispatch(setCurrentPage(parsedPage))
-          dispatch(getArticles(parsedPage))
+          dispatch(getArticles(parsedPage, token))
           navigate(`/articles/page/${parsedPage}`)
-        } else {
-          dispatch(setError('Введите допустимое значение страницы!'))
         }
       } else {
         dispatch(setError('Введите допустимое значение страницы!'))
       }
     } else {
-      dispatch(getArticles(state.currentPage))
+      dispatch(getArticles(state.currentPage, token))
     }
   }, [state.currentPage, state.totalPages, dispatch, paramPage, navigate])
 

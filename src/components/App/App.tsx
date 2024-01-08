@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ReactNode, useEffect } from 'react'
+import { useEffect } from 'react'
 import { BrowserRouter as Router, Navigate, Route, RouteProps, Routes } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -11,6 +10,7 @@ import FullArticle from '../FullArticle/FullArticle'
 import LoginPage from '../Auth/LoginPage/LoginPage'
 import RegisterPage from '../Auth/RegisterPage/RegisterPage'
 import CustomArticle from '../CustomArticle/CustomArticle'
+import UnknownPage from '../UnknownPage/UnknownPage'
 
 import ProfilePage from './../Auth/ProfilePage/ProfilePage'
 
@@ -65,6 +65,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        <Route path='*' element={<UnknownPage />} />
       </Routes>
     </Router>
   )
