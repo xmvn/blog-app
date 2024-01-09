@@ -35,8 +35,8 @@ const FullArticle = () => {
   useEffect(() => {
     dispatch(startLoading())
     if (slug) {
-      if (localToken) {
-        dispatch(getFullArticle(slug, localToken))
+      if (localToken && JSON.parse(localToken)) {
+        dispatch(getFullArticle(slug, JSON.parse(localToken)))
       } else {
         dispatch(getFullArticle(slug))
       }
